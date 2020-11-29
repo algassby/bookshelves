@@ -34,14 +34,22 @@ export class AuthService {
    * @param email 
    * @param password 
    */
-  signin(email:string, password:string){
+  signInUser(email:string, password:string){
     return new Promise(
       (resolve, reject)=>{
 
-        firebase.auth().signInWithEmailAndPassword(email, password);
+        firebase.auth().signInWithEmailAndPassword(email, password).then(
+          ()=>{
+            resolve();
+          }
+        );
 
       }
 
     );
+  }
+
+  signOut(){
+    firebase.auth().signOut();
   }
 }
