@@ -27,7 +27,6 @@ const appRoutes:Routes = [
   {path:'', redirectTo:'books', pathMatch:'full'},
   {path:'**', redirectTo:'books'}
   
-
 ];
 
 @NgModule({
