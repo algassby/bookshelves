@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Event, Router } from '@angular/router';
+import { url } from 'inspector';
 import { title } from 'process';
 import { Book } from 'src/app/models/book.model';
 import { BooksService } from 'src/app/services/books.service';
@@ -13,6 +14,9 @@ import { BooksService } from 'src/app/services/books.service';
 export class BookFormComponent implements OnInit {
 
   bookForm: FormGroup = new FormGroup({});
+  fileIsUploading  = false;
+  fileUrl : string ="";
+  fileUploaded  = false;
   constructor(private formBuilder:FormBuilder,private bookservice:BooksService,private router:Router) { }
 
   ngOnInit(): void {
@@ -31,7 +35,28 @@ export class BookFormComponent implements OnInit {
     const title = this.bookForm.get('title')?.value;
     const author = this.bookForm.get('author')?.value;
     const newBook = new Book(title, author);
+    if(this.fileUrl && this.fileUrl!==''){
+      newBook.photo = this.fileUrl;
+    }
     this.bookservice.createNewBook(newBook);
-    this.router.navigate(['/books'])
+    this.router.navigate(['/books']);
+  }
+
+  //uploading
+  onUploadFile(file:File){
+    this.fileIsUploading = true;
+    this.bookservice.uploadFile(file).then(
+      (url : any)=>{
+        this.fileUrl = url;
+        this.fileIsUploading = false;
+        this.fileUploaded = true;
+      }
+    );
+
+  }
+ //changement du fichier*** 
+  detectFiles(event:any){
+    this.onUploadFile(event.target.files[0]);
+
   }
 }
